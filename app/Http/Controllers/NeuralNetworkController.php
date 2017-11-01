@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Toy;
+use App\Loan;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Services\ANN;
@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 class NeuralNetworkController extends Controller
 {
     /**
-     * Train neural network based on children's favorite toy.
+     * Train neural network based on children's favorite Loan.
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -36,7 +36,7 @@ class NeuralNetworkController extends Controller
             //set max time for execution (seconds)
             set_time_limit($request->input('max_timeout', 30));
 
-            $generator = new ANN\TrainingDataGenerators\ChildrenToyGenerator();
+            $generator = new ANN\TrainingDataGenerators\ChildrenLoanGenerator();
 
             $children = Child::get();
 
@@ -65,7 +65,7 @@ class NeuralNetworkController extends Controller
      */
     public function analyze(Request $request){
 
-        //configure rules for validation.
+        //configure rules for validation. for loan
         $rules = [
             'gender' => 'required|in:male,female',
             'age' => 'required|integer|between:1,12'
@@ -76,7 +76,7 @@ class NeuralNetworkController extends Controller
         if($v->passes()){
 
             //Get child for comparison of predicted results.
-            $child = Child::with('toy')
+            $child = Child::with('Loan')
                 ->where('age', $request->input('age'))
                 ->where('gender',$request->input('gender'))
                 ->first();
@@ -90,13 +90,13 @@ class NeuralNetworkController extends Controller
 
             $annOutput = $annService->ask($input);
 
-            $predictedToyId = $this->getPredictedToyId($annOutput);
+            $predictedLoanId = $this->getPredictedLoanId($annOutput);
 
-            $predictedToy = Toy::findOrFail($predictedToyId);
+            $predictedLoan = Loan::findOrFail($predictedLoanId);
 
             return response()->json(['status' => 'success', 'data' => [
-                'predicted_favorite_toy' => $predictedToy->name,
-                'actual_favorite_toy' => $child->toy->name
+                'predicted_favorite_Loan' => $predictedLoan->name,
+                'actual_favorite_Loan' => $child->Loan->name
             ]], 200);
 
         } else return response()->json(['status'=> 'fail', 'data' => $v->messages()], 400);
@@ -108,13 +108,13 @@ class NeuralNetworkController extends Controller
      */
     public function accuracy(){
 
-        $children = Child::get();
+        $children = Child::get(); //fetch application for loan from the application table
 
         $accuracyCount = 0;
 
         $report = [];
 
-        $annService = new ANN\NeuralNetworkService(storage_path('children.ann'));
+        $annService = new ANN\NeuralNetworkService(storage_path('loan.ann')); //loan.ann defines the ann preferences
 
         foreach($children as $child){
 
@@ -125,17 +125,17 @@ class NeuralNetworkController extends Controller
 
             $output = $annService->ask($input);
 
-            $predictedToyId = $this->getPredictedToyId($output);
+            $predictedLoanId = $this->getPredictedLoanId($output);
 
-            $accuracyCount += ($predictedToyId == $child->toy_id) ? 1 : 0;
+            $accuracyCount += ($predictedLoanId == $child->loan_id) ? 1 : 0;
 
             $report[] = [
                 'gender' => $child->gender,
                 'age' => $child->age,
-                'actual_toy_id' => $child->toy_id,
-                'predicted_toy_id' => $predictedToyId,
+                'actual_loan_id' => $child->loan_id,
+                'predicted_loan_id' => $predictedLoanId,
                 'ann_output' => $output[0],
-                'correct' => ($predictedToyId == $child->toy_id) ? true : false
+                'correct' => ($predictedLoanId == $child->loan_id) ? true : false
             ];
         }
 
@@ -148,29 +148,29 @@ class NeuralNetworkController extends Controller
     }
 
     /**
-     * Get predicted toy id based on ANN output.
+     * Get predicted Loan id based on ANN output.
      *
      * @param $annOutput
      * @return int|null
      */
-    private function getPredictedToyId($annOutput){
+    private function getPredictedLoanId($annOutput){
 
-        //convert back to near representation of toy id and round decimal places.
-        $convertedToyResult = round($annOutput[0]*100, 6);
+        //convert back to near representation of Loan id and round decimal places.
+        $convertedLoanResult = round($annOutput[0]*100, 6);
 
-        $toyIds = Toy::lists('id');
+        $LoanIds = Loan::lists('id');
 
-        return $this->getClosestToyId($convertedToyResult, $toyIds);
+        return $this->getClosestLoanId($convertedLoanResult, $LoanIds);
     }
 
     /**
-     * Function to convert ANN output value to nears toy id.
+     * Function to convert ANN output value to nears Loan id.
      *
      * @param $search
      * @param $arr
      * @return integer|null
      */
-    private function getClosestToyId($search, $arr) {
+    private function getClosestLoanId($search, $arr) {
 
         $closest = ($arr) ? $arr[0] : null;
 

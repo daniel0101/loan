@@ -11,8 +11,10 @@
 |
 */
 
-Route::get('/', 'LoanController@index');
-
+Route::get('/', 'HomeController@index');
+Route::get('/dashboard', 'LoanController@dashboard');
+Route::get('/application', 'LoanController@application');
+Route::post('/application', 'LoanController@apply');
 Route::resource('loan', 'LoanController');
 
 Route::get('advanced_search', 'LoanController@advancedSeach')->name('loan.advanced_search');

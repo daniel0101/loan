@@ -8,6 +8,10 @@ use DB;
 
 class LoanController extends Controller
 {
+
+    public function __construct(){
+       // $this->middleware('Auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,9 +20,18 @@ class LoanController extends Controller
     public function index()
     {
         $loans = Loan::orderBy('created_at', 'DESC')->paginate(15);
-
         return view('loan.index', compact('loans'));
     }
+    public function dashboard(){
+        return view('loan.dashboard');
+    } 
+    public function application(){
+        return view('loan.application');
+    } 
+    public function apply(Request $request){
+
+    }
+
 
     /**
      * Show the form for creating a new resource.
