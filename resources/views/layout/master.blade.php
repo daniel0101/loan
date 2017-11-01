@@ -5,6 +5,7 @@
 	<title>Loan CRUD Mini Application</title>
 
 	<link rel="stylesheet" type="text/css" href="{{ asset('bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="/css/app.css">
 	{{-- <link rel="stylesheet" type="text/css" href="{{ asset('bower_components/datepicker/css/datepicker.css') }}"> --}}
 	<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css">
 

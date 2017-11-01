@@ -16,3 +16,7 @@ Route::get('/', 'LoanController@index');
 Route::resource('loan', 'LoanController');
 
 Route::get('advanced_search', 'LoanController@advancedSeach')->name('loan.advanced_search');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
