@@ -8,12 +8,20 @@
 
     <title>Loan Managers</title>
 
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/paper-kit.css?v=2.1.0" rel="stylesheet"/>
     <link href="/css/demo.css" rel="stylesheet" />
+
+    <script src="/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script src="/js/jquery-ui-1.12.1.custom.min.js" type="text/javascript"></script>
+    <script src="/js/popper.js" type="text/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
 
     <!--     Fonts and icons     -->
     <link href='http://fonts.googleapis.com/css?family=Montserrat:400,300,700' rel='stylesheet' type='text/css'>
@@ -22,7 +30,7 @@
 
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg fixed-top navbar-transparent nav-down" color-on-scroll="500">
+	<nav class="navbar navbar-expand-lg fixed-top navbar-danger" color-on-scroll="500">
 		<div class="container">
 			<div class="navbar-translate">
 				<div class="navbar-header">
@@ -73,26 +81,38 @@
 			<div class="row">
 				<nav class="footer-nav">
 					<ul>
-						<li><a href="https://www.creative-tim.com">Creative Tim</a></li>
-						<li><a href="http://blog.creative-tim.com">Blog</a></li>
-						<li><a href="https://www.creative-tim.com/license">Licenses</a></li>
+						<li><a href="/">Home</a></li>
+						<li><a href="{{ url('/application')}}">apply</a></li>
 					</ul>
+                    <div class="credits ml-auto pull-right">
+                        <span class="copyright">
+                            © <script>document.write(new Date().getFullYear())</script>, made with <i class="fa fa-heart heart"></i> for a better world
+                        </span>
+				    </div>
 				</nav>
-				<div class="credits ml-auto">
-					<span class="copyright">
-						© <script>document.write(new Date().getFullYear())</script>, made with <i class="fa fa-heart heart"></i> for a better world
-					</span>
-				</div>
+				
 			</div>
 		</div>
 	</footer>
 
-    <script src="/js/jquery-3.2.1.min.js" type="text/javascript"></script>
-    <script src="/js/jquery-ui-1.12.1.custom.min.js" type="text/javascript"></script>
-    <script src="/js/popper.js" type="text/javascript"></script>
-    <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    
 
     <!-- Control Center for Paper Kit: parallax effects, scripts for the example pages etc -->
     <script src="{{asset('/js/paper-kit.js?v=2.1.0')}}"></script>
+
+    <style>
+        div#flashMessage.message {
+            position: absolute;
+            width: 100%;
+            left: 0px;
+            top: 75px;
+            z-index: 99;
+            text-align: center;
+            padding: 10px;
+            color: white;
+            border-radius: 6px;
+            background: #08708a;
+        }
+    </style>
     </body>
     </html>

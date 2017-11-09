@@ -56,11 +56,12 @@
                     </div>
                     <div class="col-md-4 col-md-offset-s1">
                         <form method="POST" action="/application">
+                            {{ csrf_field() }}
                             <div class="card card-plain">
                                 <div class="content">
                                     <div class="form-group">
                                         <label>Full Name</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" name="name" class="form-control">
                                     </div>
                                     <div class="form-group">
                                        <label>Current Income Level <small>(Per Annum)</small></label> 
@@ -75,11 +76,11 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Loan Amount</label>
-                                        <input type="text" class="form-control">
+                                        <input type="text" name="loan_amount" class="form-control">
                                     </div>
                                     <div class="form-group">
                                         <label>Reason For Loan</label>
-                                        <textarea class="form-control"></textarea>
+                                        <textarea class="form-control" name="reason"></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label>Collateral</label>
@@ -88,6 +89,7 @@
                                             <option value="Company">Company</option>
                                             <option value="Reputation">Reputation</option>
                                             <option value="Land">Land</option>
+                                            <option value="Car">Car</option>
                                         </select>
                                     </div>
                                 </div>

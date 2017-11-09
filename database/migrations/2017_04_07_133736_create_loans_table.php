@@ -15,7 +15,7 @@ class CreateLoansTable extends Migration
     {
         Schema::create('loans', function (Blueprint $table) {
             $table->increments('id');
-
+            $table->integer('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->decimal('loan_amount', 21, 6);
             $table->integer('loan_term')->unsigned();
             $table->decimal('interest_rate', 21, 6);

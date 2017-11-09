@@ -30,7 +30,6 @@
 
 <div class="wrapper">
     <div class="sidebar" data-color="purple" data-image="/img/sidebar-5.jpg">
-     
     	<div class="sidebar-wrapper">
             <div class="logo">
                 <a href="#" class="simple-text">
@@ -39,6 +38,7 @@
             </div>
 
             <ul class="nav">
+                @if(Auth::user()->email == 'admin@lms.com')
                 <li class="active">
                     <a href="{{ url('/dashboard') }}">
                         <i class="pe-7s-graph"></i>
@@ -63,13 +63,29 @@
                         <p>Manage Applications</p>
                     </a>
                 </li>
+                @else
+                <li class="">
+                    <a href="{{ url('/userloans') }}">
+                        <i class="pe-7s-graph"></i>
+                        <p>Manage Loans</p>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{{ url('/application') }}">
+                        <i class="pe-7s-graph"></i>
+                        <p>Apply now</p>
+                    </a>
+                </li>
+                @endif
                 <li class="">
                     <a href="{{ url('/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <i class="pe-7s-close-circle"></i>
                         <p>logout</p>
                     </a>
                 </li>
-
+                <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                </form>
             </ul>
     	</div>
     </div>

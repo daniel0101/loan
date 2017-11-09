@@ -39,6 +39,16 @@
 									<span class="help-block">{{ $errors->first('interest_rate') }}</span>
 								@endif
 						</div>
+						<div class="row">
+							<div class="form-group">
+								<label class="control-label" required>Select User</label>
+								<select class="form-control" name="user_id">
+									@foreach($users as $user)
+									<option value="{{ $user->id}}">{{$user->name}}</option>
+									@endforeach
+								</select>
+							</div>
+						</div>
 						<div class="row form-group {{ $errors->has('start_date') ? 'has-error' : 'start_date' }}">
 							<label for="start_date" class="control-label">Start Date: </label>
 								<div class="input-group">

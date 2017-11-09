@@ -15,12 +15,13 @@ class Applications extends Migration
     {
        Schema::create('applications',function(Blueprint $table){
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->integer('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->decimal('loan_amount',30,6);
             $table->decimal('income',30,6);
             $table->string('why');
             $table->string('collateral');
             $table->decimal('collateral_value',30,6);
+            $table->float('fuzzy_score',30,6);
             $table->timestamps();
        });
     }

@@ -14,6 +14,7 @@
 Route::get('/', 'HomeController@index');
 Route::get('/dashboard', 'LoanController@dashboard');
 Route::get('/application', 'LoanController@application');
+Route::get('/userloans', 'LoanController@userloans');
 Route::post('/application', 'LoanController@apply');
 Route::resource('loan', 'LoanController');
 

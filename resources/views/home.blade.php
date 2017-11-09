@@ -1,16 +1,16 @@
 @extends('layouts.home')
 
 @section('content')
-<div class="page-header" data-parallax="true" style="background-image: url('../assets/img/sections/david-marcu.jpg');">
+<script src="/js/jquery.min.js" type="text/javascript"></script>
+<div class="page-header" data-parallax="true" style="background-image: url('/img/sections/david-marcu.jpg');">
 		<div class="filter"></div>
 		<div class="content-center">
 			<div class="container">
 	            <div class="motto">
-	                <h1 class="title">Landing page</h1>
-	                <h3 class="description">Start designing your landing page here.</h3>
+	                <h1 class="title">Loan Managers</h1>
+	                <h3 class="description">Start your jorney to financial freedom</h3>
 	                <br />
-	                <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-neutral btn-round"><i class="fa fa-play"></i>Watch video</a>
-	                <button type="button" class="btn btn-outline-neutral btn-round">Download</button>
+	                <a href="{{url('/application')}}" class="btn btn-neutral btn-round"><i class="fa fa-play"></i>Apply Now</a>
 	            </div>
 	        </div>
 		</div>
@@ -20,15 +20,6 @@
     <div class="wrapper">
         <div class="section text-center landing-section">
             <div class="container">
-                <div class="row">
-                    <div class="col-md-8 ml-auto mr-auto">
-                        <h2 class="title">Let's talk product</h2>
-                        <h5>This is the paragraph where you can write more details about your product. Keep you user engaged by providing meaningful information. Remember that by this time, the user is curious, otherwise he wouldn't scroll to get here. Add a button if you want the user to see more.</h5>
-                        <br />
-                        <a href="#paper-kit" class="btn btn-danger btn-fill btn-round">See Details</a>
-                    </div>
-                </div>
-				<br /><br />
 				<div class="row">
 					<div class="col-md-3">
 						<div class="info">
@@ -36,7 +27,7 @@
 								<i class="nc-icon nc-palette"></i>
 							</div>
 							<div class="description">
-								<h4 class="info-title">Beautiful Gallery</h4>
+								<h4 class="info-title">Beautiful Repayment system</h4>
 								<p class="description">Spend your time generating new ideas. You don't have to think of implementing.</p>
 								<a href="#pkp" class="btn btn-link btn-danger">See more</a>
 							</div>
@@ -61,7 +52,7 @@
 							</div>
 							<div class="description">
 								<h4 class="info-title">Statistics</h4>
-								<p>Choose from a veriety of many colors resembling sugar paper pastels.</p>
+								<p>Our Customer satisfaction is second to none</p>
 								<a href="#pkp" class="btn btn-link btn-danger">See more</a>
 							</div>
 						</div>
@@ -73,7 +64,7 @@
 							</div>
 							<div class="description">
 								<h4 class="info-title">Delightful design</h4>
-								<p>Find unique and handmade delightful designs related items directly from our sellers.</p>
+								<p>Unique and handmade delightful designs to give you the best user experience</p>
 								<a href="#pkp" class="btn btn-link btn-danger">See more</a>
 							</div>
 						</div>
@@ -90,13 +81,13 @@
     				<div class="col-md-4">
                         <div class="card card-profile card-plain">
                             <div class="card-avatar">
-                                <a href="#avatar"><img src="../assets/img/faces/clem-onojeghuo-3.jpg" alt="..."></a>
+                                <a href="#avatar"><img src="/img/faces/clem-onojeghuo-3.jpg" alt="..."></a>
                             </div>
                             <div class="card-body">
                                 <a href="#paper-kit">
                                     <div class="author">
-                                        <h4 class="card-title">Henry Ford</h4>
-                                        <h6 class="card-category text-muted">Product Manager</h6>
+                                        <h4 class="card-title">Tolu Agbaje</h4>
+                                        <h6 class="card-category text-muted">Founder/CEO</h6>
                                     </div>
                                 </a>
                                 <p class="card-description text-center">
@@ -114,12 +105,12 @@
     				<div class="col-md-4">
                         <div class="card card-profile card-plain">
                             <div class="card-avatar">
-                                <a href="#avatar"><img src="../assets/img/faces/joe-gardner-2.jpg" alt="..."></a>
+                                <a href="#avatar"><img src="/img/faces/joe-gardner-2.jpg" alt="..."></a>
                             </div>
                             <div class="card-body">
                                 <a href="#paper-kit">
                                     <div class="author">
-                                        <h4 class="card-title">Sophie West</h4>
+                                        <h4 class="card-title">Sophie Kachukwu</h4>
                                         <h6 class="card-category text-muted">Designer</h6>
                                     </div>
                                 </a>
@@ -138,12 +129,12 @@
     				<div class="col-md-4">
                         <div class="card card-profile card-plain">
                             <div class="card-avatar">
-                                <a href="#avatar"><img src="../assets/img/faces/erik-lucatero-2.jpg" alt="..."></a>
+                                <a href="#avatar"><img src="/img/faces/erik-lucatero-2.jpg" alt="..."></a>
                             </div>
                             <div class="card-body">
                                 <a href="#paper-kit">
                                     <div class="author">
-                                        <h4 class="card-title">Robert Orben</h4>
+                                        <h4 class="card-title">Robert Alade</h4>
                                         <h6 class="card-category text-muted">Developer</h6>
                                     </div>
                                 </a>
@@ -165,7 +156,7 @@
 	    <div class="section landing-section">
 	        <div class="container">
 	            <div class="row">
-	                <div class="col-md-8 ml-auto mr-auto">
+	                <div class="col-md-8 col-md-offset-2">
 	                    <h2 class="text-center">Keep in touch?</h2>
 	                    <form class="contact-form">
 	                        <div class="row">
@@ -180,8 +171,8 @@
 	                        </div>
 	                        <label>Message</label>
 	                        <textarea class="form-control" rows="4" placeholder="Tell us your thoughts and feelings..."></textarea>
-	                        <div class="row">
-	                            <div class="col-md-4 offset-md-4">
+	                        <div class="row text-center">
+	                            <div class="col-md-4 col-md-offset-4">
 	                                <button class="btn btn-danger btn-lg btn-fill">Send Message</button>
 	                            </div>
 	                        </div>
