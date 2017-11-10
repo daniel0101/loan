@@ -8,6 +8,9 @@
         <div class="content">
             <div class="container">
                 <div class="row">
+                    {{--  <div id="cover">
+                        <img src="/img/transparent-background.gif" class="img-responsive" style="width: 50px;">
+                    </div>  --}}
                     <div class="col-md-8 col-md-offset-2">
                         <div class="header-text">
                             {{--  <h2>Application</h2>  --}}
@@ -61,7 +64,7 @@
                                 <div class="content">
                                     <div class="form-group">
                                         <label>Full Name</label>
-                                        <input type="text" name="name" class="form-control">
+                                        <input type="text" name="name" class="form-control" readonly value="{{Auth::user()->name}}">
                                     </div>
                                     <div class="form-group">
                                        <label>Current Income Level <small>(Per Annum)</small></label> 
@@ -107,5 +110,19 @@
         .card .form-group > label {
             color: #FFF;
         }
+        #cover {
+            background: url("/img/transparent-background.gif") no-repeat scroll center center transparent;
+            position: absolute;
+            z-index: 999;
+            width: 100%;
+            height: 100%;
+            
+        }
         </style>
+        <script src="/js/jquery.min.js" type="text/javascript"></script>
+        <script>
+            $(window).load(function(){
+                // $('#cover').fadeOut(1000);  
+            });
+        </script>
 @endsection        

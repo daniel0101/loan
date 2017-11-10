@@ -18,9 +18,10 @@
     <link href="/css/paper-kit.css?v=2.1.0" rel="stylesheet"/>
     <link href="/css/demo.css" rel="stylesheet" />
 
-    <script src="/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+    <script src="/js/jquery.min.js" type="text/javascript"></script>
     <script src="/js/jquery-ui-1.12.1.custom.min.js" type="text/javascript"></script>
     <script src="/js/popper.js" type="text/javascript"></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js" type="text/javascript"></script>
     <script src="/js/bootstrap.min.js" type="text/javascript"></script>
 
     <!--     Fonts and icons     -->
@@ -30,27 +31,31 @@
 
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg fixed-top navbar-danger" color-on-scroll="500">
+	<nav class="navbar navbar-expand-lg navbar-fixed-top bg-danger" style="margin-bottom: 0px;">
 		<div class="container">
 			<div class="navbar-translate">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="{{url('/')}}">Loan Managers</a>
+					<a class="navbar-brand" href="{{url('/')}}" style="padding: 31px 15px; font-size: 20px;">Loan Managers</a>
 				</div>
-				<button class="navbar-toggler navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+				{{--  <button class="navbar-toggler navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-bar"></span>
 					<span class="navbar-toggler-bar"></span>
 					<span class="navbar-toggler-bar"></span>
-				</button>
+				</button>  --}}
 			</div>
-			<div class="collapse navbar-collapse">
-				<ul class="navbar-nav ml-auto">
-					<li class="nav-item">
-						<a class="nav-link" href="{{url('/login')}}" data-scroll="true" href="javascript:void(0)">login</a>
-					</li>
+			<div class="collapse navbar-collapse pull-right">
+				<ul class="navbar-nav ml-auto" style="list-style-type: none; margin-top: 2em;">
+					
                     @if (Auth::guest())
-                        <li class="nav-item"><a href="{{ url('/login') }}">Login</a></li>
-                        <li><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
                     @else
+                        @if(Auth::user()->email == 'admin@lms.com')
+                            <li class="nav-item"><a class="nav-link" href="{{ url('/loan') }}">Dashboard</a></li>
+                        @else
+                            <li class="nav-item"><a class="nav-link" href="{{ url('/userloans') }}">My Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url('/application') }}">Apply</a></li>
+                        @endif
                         <li class="nav-item dropdown">
                             <a class="nav-link" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>
@@ -75,6 +80,7 @@
 			</div>
 		</div>
 	</nav>
+    @include('layout.flash_message')
     @yield('content')
     <footer class="footer section-dark">
 		<div class="container">
@@ -96,9 +102,10 @@
 	</footer>
 
     
+    <script src="/js/paper-kit-loan.js"></script>
 
     <!-- Control Center for Paper Kit: parallax effects, scripts for the example pages etc -->
-    <script src="{{asset('/js/paper-kit.js?v=2.1.0')}}"></script>
+    
 
     <style>
         div#flashMessage.message {
@@ -113,6 +120,7 @@
             border-radius: 6px;
             background: #08708a;
         }
+
     </style>
     </body>
     </html>

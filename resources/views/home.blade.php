@@ -2,7 +2,7 @@
 
 @section('content')
 <script src="/js/jquery.min.js" type="text/javascript"></script>
-<div class="page-header" data-parallax="true" style="background-image: url('/img/sections/david-marcu.jpg');">
+<div class="page-header" data-parallax="true" style="background-image: url('/img/federico-beccari.jpg'); margin: 0px;">
 		<div class="filter"></div>
 		<div class="content-center">
 			<div class="container">
@@ -81,7 +81,7 @@
     				<div class="col-md-4">
                         <div class="card card-profile card-plain">
                             <div class="card-avatar">
-                                <a href="#avatar"><img src="/img/faces/clem-onojeghuo-3.jpg" alt="..."></a>
+                                <a href="#avatar"><img src="/img/african.jpg" alt="..."></a>
                             </div>
                             <div class="card-body">
                                 <a href="#paper-kit">
@@ -105,7 +105,7 @@
     				<div class="col-md-4">
                         <div class="card card-profile card-plain">
                             <div class="card-avatar">
-                                <a href="#avatar"><img src="/img/faces/joe-gardner-2.jpg" alt="..."></a>
+                                <a href="#avatar"><img src="/img/lady2.jpg" alt="..."></a>
                             </div>
                             <div class="card-body">
                                 <a href="#paper-kit">
@@ -129,7 +129,7 @@
     				<div class="col-md-4">
                         <div class="card card-profile card-plain">
                             <div class="card-avatar">
-                                <a href="#avatar"><img src="/img/faces/erik-lucatero-2.jpg" alt="..."></a>
+                                <a href="#avatar"><img src="/img/Olaniran.jpg" alt="..."></a>
                             </div>
                             <div class="card-body">
                                 <a href="#paper-kit">

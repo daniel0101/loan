@@ -32,7 +32,7 @@
     <div class="sidebar" data-color="purple" data-image="/img/sidebar-5.jpg">
     	<div class="sidebar-wrapper">
             <div class="logo">
-                <a href="#" class="simple-text">
+                <a href="/" class="simple-text">
                     Loan Management System
                 </a>
             </div>
@@ -71,11 +71,18 @@
                     </a>
                 </li>
                 <li class="">
+                    <a href="{{ url('/myapplications') }}">
+                        <i class="pe-7s-graph"></i>
+                        <p>My Applications</p>
+                    </a>
+                </li>
+                <li class="">
                     <a href="{{ url('/application') }}">
                         <i class="pe-7s-graph"></i>
                         <p>Apply now</p>
                     </a>
-                </li>
+                </li>                
+                
                 @endif
                 <li class="">
                     <a href="{{ url('/logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

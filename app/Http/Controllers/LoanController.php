@@ -146,6 +146,14 @@ class LoanController extends Controller
         // dd($loans);
         return view('loan.userloans')->with(compact('loans'));
     }
+    public function showUserApplications(){
+        $applications = Application::where('user_id',Auth::user()->id)->get();
+        return view('loan.userapplications')->with(compact('applications'));
+    } 
+    public function applications(){
+        $applications = Application::all();
+        return view('loan.applications')->with(compact('applications'));
+    }
 
     public function fuzzy($income, $loan, $collateral){
         $fuzzy = new fuzzy_logic();

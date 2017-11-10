@@ -1,0 +1,4 @@
+-- import database to phpmyadmin
+-- To start the server just navigate to the root directory of the project from command prompt -- type php artisan serve 
+-- Go to your Browser and type localhost::8000 to view project
+-- Check for bugs and additions
