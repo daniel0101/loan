@@ -51,10 +51,22 @@
                         <p>Manage Loans</p>
                     </a>
                 </li>
-                <li class="">
+                {{--  <li class="">
                     <a href="{{ url('/users') }}">
                         <i class="pe-7s-graph"></i>
                         <p>Manage Users</p>
+                    </a>
+                </li>  --}}
+                <li class="">
+                    <a href="{{ url('/paybacks') }}">
+                        <i class="pe-7s-graph"></i>
+                        <p>Manage Paybacks</p>
+                    </a>
+                </li>
+                 <li class="">
+                    <a href="{{ url('/monitors') }}">
+                        <i class="pe-7s-graph"></i>
+                        <p>Loan Monitoring</p>
                     </a>
                 </li>
                 <li class="">
@@ -68,6 +80,12 @@
                     <a href="{{ url('/userloans') }}">
                         <i class="pe-7s-graph"></i>
                         <p>Manage Loans</p>
+                    </a>
+                </li>
+                <li class="">
+                    <a href="{{ url('/payments') }}">
+                        <i class="pe-7s-graph"></i>
+                        <p>My Payments</p>
                     </a>
                 </li>
                 <li class="">
@@ -129,11 +147,11 @@
             </div>
         </nav>
 
-
+    @include('layout.flash_message')
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    @include('layout.flash_message')
+                    
                     @yield('content')
                 </div>
             </div>

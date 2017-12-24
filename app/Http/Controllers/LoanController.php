@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Loan, App\RepaymentSchedule, App\Application, App\User;
+use App\Loan, App\RepaymentSchedule, App\Application, App\User, App\Payment, App\Monitor;
 use App\Libraries\fuzzy_logic;
 use Auth;
 use DB;
@@ -28,8 +28,153 @@ class LoanController extends Controller
         return view('loan.index', compact('loans'));
     }
 
+    public function monitoring(){
+        //get all loans from the monitoring table
+        $loans = Loan::with('monitor')->get();
+        
+        // dd($monitors[2]->monitor->date_paid);
+        return view('loan.monitor',compact('loans'));
+    }
+
+    /**
+     * Displays a view for showing client loan repayment paid so far
+     * returns a view 
+     */
+
+    public function showPayments(){
+        $payments = Payment::all();
+        return view('loan.payments',compact('payments'));
+    }
+
+    public function add_payment(){
+        $loans = $this->getUserLoans();
+        return view('loan.addpayment', compact('loans'));
+    }
+
+    public function editPayment($id){
+        $payment = Payment::find($id);
+        $loans = $this->getUserLoans();
+        return view('loan.addpayment',compact('payment','loans'));
+    }
+
+    public function paybacks(){
+        $payments = Payment::all();
+        return view('loan.paybacks',compact('payments'));
+    }
+
+    public function delete($model, $id){
+        try{
+            // $entities = call_user_func('App\\'.$model.'::findOrFail('.$id.')');
+            $user = Payment::findOrFail($id);
+            $user->delete();
+            return redirect()->back()->with('message','Data Deleted!')
+                                    ->with('status','Success')
+                                    ->with('color','success');
+        }catch(ModelNotFoundException $e){
+            throw $e;
+        }
+    }
+
+    public function addPayment(Request $request){
+        // dd($request->all());
+        if(!empty($request->id)){
+            $payment = Payment::find($request->id);
+            if($payment){
+                $payment->update($request->all());
+            }else{
+                return redirect()->back()->with('message','An Error Occured, Check your inputs')
+                            ->with('status','Error')
+                            ->with('color','danger');
+            }    
+        }else{
+            Payment::create($request->all());
+        }
+        //update the loan amount in monitoring table
+        return redirect('/payments')->with('message','Payment Recorded pending Approval')
+                                    ->with('status','Success')
+                                    ->with('color','success');
+    }
+    
+    public function getUserLoans(){
+        //Eager load users loan
+        $user = User::find(Auth::user()->id);
+        $loans = $user->loan;
+        return $loans;
+    }
+
+    public function payBack(Request $request){
+
+    }
+
+    public function approvePayback($id){
+        $payment = Payment::findOrFail($id);
+
+        $payment->status = 'approved';
+        
+        $payment->save();
+        
+           //after approving --persit to monitoring table --first check if there is a monitoring data for this loan --amount paid and unpaid balance
+            $monitor = Monitor::where('loan_id',$payment->loan_id)->get()->first();
+            if($monitor){            
+                $monitor->amount_paid = $payment->amount + $monitor->amount_paid;
+                $monitor->unpaid_balance = $payment->loan->loan_amount - $monitor->amount_paid;
+                $monitor->date_paid = $payment->created_at;
+                $monitor->save(); 
+                $this->check = true;
+            }else{
+                //build monitoring data
+                $data['loan_id'] = $payment->loan_id;
+                $data['user_id'] = Auth::user()->id;
+                $data['amount_paid'] = $payment->amount;
+                $data['unpaid_balance'] = $payment->loan->loan_amount - $payment->amount;
+                $data['date_paid'] = $payment->created_at;
+            // dd($data);
+                // dd($data);
+                //create new loan monitoring record
+                Monitor::create($data);       
+            } 
+       
+        
+
+        return redirect('/paybacks')->with('message','Payment Approved and Recorded')
+                                ->with('status','Success')
+                                ->with('color','info');
+    }
+
+    public function disapprovePayback($id){
+        $payment = Payment::findOrFail($id);
+
+        $payment->status = 'disapproved';
+
+        $payment->save();
+        
+            //build monitoring data
+            $data['loan_id'] = $payment->loan_id;
+            $data['user_id'] = Auth::user()->id;
+            $data['amount_paid'] = $payment->amount;
+            $data['date_paid'] = $payment->created_at;
+            // dd($data);
+            //after approving --persit to monitoring table --first check if there is a monitoring data for this loan --amount paid and unpaid balance
+            $monitor = Monitor::where('loan_id',$payment->loan_id)->get()->first();
+            if($monitor){            
+                $monitor->amount_paid = abs($monitor->amount_paid - $data['amount_paid']);
+                $monitor->unpaid_balance = $monitor->unpaid_balance + $payment->amount;
+                $monitor->date_paid = $data['date_paid'];
+                $monitor->save(); 
+            }
+       
+        
+
+        return redirect('/paybacks')->with('message','Payment Disapproved')
+                                ->with('status','Success')
+                                ->with('color','warning');
+    }
+   
     public function dashboard(){
-        return view('loan.dashboard');
+        $users = User::all();
+        $loans = Loan::all();
+        $applications = Application::all();
+        return view('loan.dashboard',compact('users','application','loans'));
     } 
 
     public function application(){
@@ -60,7 +205,7 @@ class LoanController extends Controller
                 case 'less than 100M':
                     $income = rand(60,80);
                     break;
-                case 'less than 100M':
+                case 'greater than 100M':
                     $income = rand(80,100);
                     break;            
                 
@@ -94,40 +239,16 @@ class LoanController extends Controller
             $status = intval($statusFuzzy);
 
             if($status >0 && $status <= 40){
-                $application = new Application;
-                $application->loan_amount = $request->loan_amount;
-                $application->income = $request->income;
-                $application->collateral = $request->collateral;
-                $application->user_id = Auth::user()->id;
-                $application->why = $request->reason;
-                $application->fuzzy_score = $statusFuzzy;
-                $application->status = 'Rejected';
-                $application->save();
+                $this->saveApplication($stat = 'Rejected');
                 return redirect('/')->with('status','Rejected')
                                  ->with('message','We are sorry to inform you that our system Rejected your Loan Application')
                                  ->with('color','danger');   
             }elseif($status > 40 && $status <= 60){
-                $application = new Application;
-                $application->loan_amount = $request->loan_amount;
-                $application->income = $request->income;
-                $application->collateral = $request->collateral;
-                $application->user_id = Auth::user()->id;
-                $application->why = $request->reason;
-                $application->status = 'Pending';
-                $application->fuzzy_score = $statusFuzzy;
-                $application->save();
+                $this->saveApplication($stat='Pending');
                 return redirect('/')->with('status','Pending')
                                  ->with('message','Intelligent system Advises that we review your application again...Check back Later')->with('color','info');
             }elseif($status > 60 && $status <=100){
-                $application = new Application;
-                $application->loan_amount = !empty($request->loan_amount)? $request->loan_amount:0;
-                $application->income = $request->income;
-                $application->collateral = $request->collateral;
-                $application->user_id = Auth::user()->id;
-                $application->why = $request->reason;
-                $application->fuzzy_score = $statusFuzzy;
-                $application->status = 'Accepted';
-                $application->save();
+                    $this->saveApplication($stat='Accepted');
                 return redirect('/')->with('status','Success')
                                  ->with('message','We are glad to Inform you that your Loan Application was successful')
                                 ->with('color','success');
@@ -140,6 +261,18 @@ class LoanController extends Controller
         if($sucess==false){
             return back()->with('status','Error')->with('message','We could not process your application')->with('color','danger');
         }
+    }
+
+    public function saveApplication($status){
+        $application = new Application;
+        $application->loan_amount = !empty($request->loan_amount)? $request->loan_amount:0;
+        $application->income = $request->income;
+        $application->collateral = $request->collateral;
+        $application->user_id = Auth::user()->id;
+        $application->why = $request->reason;
+        $application->fuzzy_score = $statusFuzzy;
+        $application->status = $status;
+        return $application->save();
     }
     public function userloans(){
         $loans = Loan::where('user_id',Auth::user()->id)->get();
@@ -180,11 +313,11 @@ class LoanController extends Controller
         $fuzzy->addMember($fuzzy->GetOutputName(0),'ACCEPT', 50, 70 ,100,RINFINITY);
 
         $fuzzy->clearRules();
-        //set rules with lingustic variables -- 24 in total
+        //set rules with lingustic variables -- 27 in total
         $fuzzy->addRule('IF INCOME_LEVEL.IL_LOW AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.REJECT');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_LOW AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.REJECT');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_LOW AND LOAN_AMOUNT.LA_HIGH  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.REJECT');
-        $fuzzy->addRule('IF INCOME_LEVEL.IL_LOW AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.ACCEPT');
+        $fuzzy->addRule('IF INCOME_LEVEL.IL_LOW AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.PENDING');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_LOW AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.PENDING');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_LOW AND LOAN_AMOUNT.LA_HIGH  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.REJECT');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_LOW AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_GOOD THEN APPLICATION_STATUS.ACCEPT');
@@ -192,7 +325,7 @@ class LoanController extends Controller
         $fuzzy->addRule('IF INCOME_LEVEL.IL_LOW AND LOAN_AMOUNT.LA_HIGH  AND COLLATERAL.CO_GOOD THEN APPLICATION_STATUS.ACCEPT');
 
         $fuzzy->addRule('IF INCOME_LEVEL.IL_MIDDLE AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.PENDING');
-        $fuzzy->addRule('IF INCOME_LEVEL.IL_MIDDLE AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.REJECT');
+        $fuzzy->addRule('IF INCOME_LEVEL.IL_MIDDLE AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.PENDING');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_MIDDLE AND LOAN_AMOUNT.LA_HIGH  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.REJECT');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_MIDDLE AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.ACCEPT');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_MIDDLE AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.ACCEPT');
@@ -201,11 +334,11 @@ class LoanController extends Controller
         $fuzzy->addRule('IF INCOME_LEVEL.IL_MIDDLE AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_GOOD THEN APPLICATION_STATUS.ACCEPT');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_MIDDLE AND LOAN_AMOUNT.LA_HIGH  AND COLLATERAL.CO_GOOD THEN APPLICATION_STATUS.ACCEPT');
 
-        $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.REJECT');
-        $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.REJECT');
+        $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.PENDING');
+        $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.PENDING');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_HIGH  AND COLLATERAL.CO_BAD THEN APPLICATION_STATUS.REJECT');
-        $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.PENDING');
-        $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.ACCEPT');
+        $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.ACCEPT');
+        $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.PENDING');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_HIGH  AND COLLATERAL.CO_FAIR THEN APPLICATION_STATUS.PENDING');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_LOW  AND COLLATERAL.CO_GOOD THEN APPLICATION_STATUS.ACCEPT');
         $fuzzy->addRule('IF INCOME_LEVEL.IL_HIGH AND LOAN_AMOUNT.LA_MIDDLE  AND COLLATERAL.CO_GOOD THEN APPLICATION_STATUS.ACCEPT');

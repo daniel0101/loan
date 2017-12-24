@@ -60,9 +60,9 @@
 										</tr>
 									</thead>
 									<tbody>
-										@foreach($loans as $loan)
+										@foreach($loans as $i => $loan)
 										<tr>
-											<td>{{ $loan->id }}</td>
+											<td>{{ $i+1 }}</td>
 											<td> &#x20A6;{{ number_format($loan->loan_amount, 2) }} </td>
 											<td>{{ $loan->loan_term }} Years</td>
 											<td>{{ number_format($loan->interest_rate, 2) }}%</td>
