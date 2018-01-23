@@ -174,7 +174,7 @@ class LoanController extends Controller
         $users = User::all();
         $loans = Loan::all();
         $applications = Application::all();
-        return view('loan.dashboard',compact('users','application','loans'));
+        return view('loan.dashboard',compact('users','applications','loans'));
     } 
 
     public function application(){

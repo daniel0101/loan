@@ -30,8 +30,10 @@
 											<td>{{ $payment->status  }}</td>
 											<td>{{ $payment->created_at  }}</td>
 											<td>
-                                                <a href="/editpayment/{{$payment->id}}" class="btn btn-info"> Edit</a>
-                                                <a href="/delete/Payment/{{$payment->id}}" class="btn btn-danger"> Delete</a>
+												<a href="/editpayment/{{$payment->id}}" class="btn btn-info"> Edit</a>
+												@if($payment->status !='approved')
+												<a href="/delete/Payment/{{$payment->id}}" class="btn btn-danger"> Delete</a>
+												@endif
                                             </td>
 										</tr>
 										@endforeach

@@ -2,7 +2,7 @@
 
 @section('content')
 <script src="/js/jquery.min.js" type="text/javascript"></script>
-<div class="page-header" data-parallax="true" style="background-image: url('/img/federico-beccari.jpg'); margin: 0px;">
+<div class="page-header" data-parallax="true" style="background-image: url('/img/yaba.jpg'); margin: 0px;">
 		<div class="filter"></div>
 		<div class="content-center">
 			<div class="container">

@@ -29,7 +29,11 @@
 						<td>{{ $loan->created_at }}</td>
 					</tr>
 				</table>
-				<a href="{{ route('loan.index') }}" class="btn btn-default">Back</a>
+				@if(Auth::user()->email == 'admin@lms.com')
+					<a href="{{ route('loan.index') }}" class="btn btn-default">Back</a>
+				@else
+					<a href="/userloans" class="btn btn-default">Back</a>
+				@endif
 			</div>
 		</div>		
 	</div>
@@ -64,7 +68,11 @@
 						@endforeach
 					</tbody>
 				</table>
-				<a href="{{ route('loan.index') }}" class="btn btn-default">Back</a>
+				@if(Auth::user()->email == 'admin@lms.com')
+					<a href="{{ route('loan.index') }}" class="btn btn-default">Back</a>
+				@else
+					<a href="/userloans" class="btn btn-default">Back</a>
+				@endif
 			</div>
 		</div>		
 	</div>
