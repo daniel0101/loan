@@ -51,7 +51,7 @@
                         <li class="nav-item"><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
                     @else
                         @if(Auth::user()->email == 'admin@lms.com')
-                            <li class="nav-item"><a class="nav-link" href="{{ url('/loan') }}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ url('/dashboard') }}">Dashboard</a></li>
                         @else
                             <li class="nav-item"><a class="nav-link" href="{{ url('/userloans') }}">My Dashboard</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ url('/application') }}">Apply</a></li>

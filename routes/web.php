@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'HomeController@index');
+Route::get('/welcome', 'HomeController@welcome')->middleware('auth');
 Route::get('/dashboard', 'LoanController@dashboard');
 Route::get('/application', 'LoanController@application');
 Route::get('/applications', 'LoanController@applications');
