@@ -185,6 +185,7 @@ class LoanController extends Controller
         try{
             $loan = $request->loan_amount;
             $income = $request->income;
+            // dd($request->income);
             $collateral = $request->collateral;
             
 
@@ -239,16 +240,16 @@ class LoanController extends Controller
             $status = intval($statusFuzzy);
 
             if($status >0 && $status <= 40){
-                $this->saveApplication($stat = 'Rejected');
+                $this->saveApplication($request,$stat = 'Rejected',$statusFuzzy);
                 return redirect('/')->with('status','Rejected')
                                  ->with('message','We are sorry to inform you that our system Rejected your Loan Application')
                                  ->with('color','danger');   
             }elseif($status > 40 && $status <= 60){
-                $this->saveApplication($stat='Pending');
+                $this->saveApplication($request,$stat='Pending',$statusFuzzy);
                 return redirect('/')->with('status','Pending')
                                  ->with('message','Intelligent system Advises that we review your application again...Check back Later')->with('color','info');
             }elseif($status > 60 && $status <=100){
-                    $this->saveApplication($stat='Accepted');
+                    $this->saveApplication($request,$stat='Accepted',$statusFuzzy);
                 return redirect('/')->with('status','Success')
                                  ->with('message','We are glad to Inform you that your Loan Application was successful')
                                 ->with('color','success');
@@ -263,11 +264,11 @@ class LoanController extends Controller
         }
     }
 
-    public function saveApplication($status){
+    public function saveApplication($request,$status,$statusFuzzy){
         $application = new Application;
         $application->loan_amount = !empty($request->loan_amount)? $request->loan_amount:0;
-        $application->income = $request->income;
-        $application->collateral = $request->collateral;
+        $application->income = $request->income? $request->income: 0;
+        $application->collateral = $request->collateral?$request->collateral:'';
         $application->user_id = Auth::user()->id;
         $application->why = $request->reason;
         $application->fuzzy_score = $statusFuzzy;
